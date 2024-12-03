@@ -1,9 +1,9 @@
-mod day_2_red_nosed_reports;
+mod day_3_mull_it_over;
 
-use day_2_red_nosed_reports::day_2::part_1;
-use day_2_red_nosed_reports::day_2::part_2;
+use day_3_mull_it_over::day_3::part_1;
+use day_3_mull_it_over::day_3::part_2;
 
 fn main() {
-    // println!("part_1 - {:?}", part_1());
-    println!("part_2 - {:?}", part_2());
+    println!("part_1 - {:?}", part_1());
+    // println!("part_2 - {:?}", part_2());
 }
