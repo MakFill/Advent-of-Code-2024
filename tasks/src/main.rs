@@ -1,9 +1,9 @@
-mod day_3_mull_it_over;
+mod day_4_ceres_search;
 
-use day_3_mull_it_over::day_3::part_1;
-use day_3_mull_it_over::day_3::part_2;
+use day_4_ceres_search::day_4::part_1;
+use day_4_ceres_search::day_4::part_2;
 
 fn main() {
-    // println!("part_1 - {:?}", part_1());
-    println!("part_2 - {:?}", part_2());
+    println!("part_1 - {:?}", part_1());
+    // println!("part_2 - {:?}", part_2());
 }
