@@ -122,6 +122,62 @@ pub fn part_1() -> usize {
     res
 }
 
+fn check_is_word_assembled(
+    left_top: char,
+    right_top: char,
+    right_bottom: char,
+    left_bottom: char,
+) -> bool {
+    if left_top == right_bottom {
+        return false;
+    }
+
+    let corner_letters_arr = [left_top, right_top, right_bottom, left_bottom];
+
+    let mut count_m = 0;
+    let mut count_s = 0;
+
+    for &c in corner_letters_arr.iter() {
+        match c {
+            'M' => count_m += 1,
+            'S' => count_s += 1,
+            _ => return false,
+        }
+    }
+
+    count_m == count_s
+}
+
 pub fn part_2() -> usize {
-    0
+    let data = include_str!("./input.txt")
+        .lines()
+        .map(|line| line.chars().collect::<Vec<_>>())
+        .collect::<Vec<_>>();
+
+    let mut res = 0_usize;
+    let row_len = data.len();
+    let column_len = data[0].len();
+
+    for (index_row, row) in data.iter().enumerate().skip(1) {
+        if index_row == row_len - 1 {
+            break;
+        }
+        for (index_column, &item) in row.iter().enumerate().skip(1) {
+            if index_column == column_len - 1 {
+                break;
+            }
+            if item == 'A'
+                && check_is_word_assembled(
+                    data[index_row - 1][index_column - 1],
+                    data[index_row - 1][index_column + 1],
+                    data[index_row + 1][index_column + 1],
+                    data[index_row + 1][index_column - 1],
+                )
+            {
+                res += 1;
+            }
+        }
+    }
+
+    res
 }
