@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-pub fn part_1() -> usize {
+fn get_result(with_reorder: bool) -> usize {
     let mut pages_vec = vec![];
     let mut before_map = HashMap::new();
 
@@ -35,6 +35,15 @@ pub fn part_1() -> usize {
         let mut entry_set: HashSet<usize> = HashSet::new();
         for page in pages.iter() {
             if entry_set.contains(page) {
+                if with_reorder {
+                    let mut reordered_vec = pages.clone();
+
+                    bubble_sort(&mut reordered_vec, &before_map);
+
+                    let len = reordered_vec.len();
+                    let middle_element = if len == 0 { 0 } else { reordered_vec[len / 2] };
+                    res += middle_element;
+                }
                 continue 'outer;
             }
             if let Some(page_set) = before_map.get(page) {
@@ -42,14 +51,38 @@ pub fn part_1() -> usize {
             }
         }
 
-        let len = pages.len();
-        let middle_element = if len == 0 { 0 } else { pages[len / 2] };
-        res += middle_element;
+        if !with_reorder {
+            let len = pages.len();
+            let middle_element = if len == 0 { 0 } else { pages[len / 2] };
+            res += middle_element;
+        }
     }
 
     res
 }
 
+fn bubble_sort(arr: &mut [usize], before_map: &HashMap<usize, HashSet<usize>>) {
+    let len = arr.len();
+    for i in 0..len {
+        let mut swapped = false;
+        for k in 0..len - i - 1 {
+            if let Some(set) = before_map.get(&arr[k]) {
+                if set.contains(&arr[k + 1]) {
+                    arr.swap(k, k + 1);
+                    swapped = true;
+                }
+            }
+        }
+        if !swapped {
+            break;
+        }
+    }
+}
+
+pub fn part_1() -> usize {
+    get_result(false)
+}
+
 pub fn part_2() -> usize {
-    0
+    get_result(true)
 }
