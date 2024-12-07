@@ -1,4 +1,4 @@
-pub fn part_1() -> usize {
+fn get_result(with_concatenation: bool) -> usize {
     let data = include_str!("./input.txt")
         .lines()
         .map(|line| {
@@ -16,35 +16,45 @@ pub fn part_1() -> usize {
         .collect::<Vec<_>>();
 
     data.iter().fold(0, |acc, item| {
-        if check_is_calibration_result(0, item.0, &item.1) {
+        if check_is_calibration_result(0, item.0, &item.1, with_concatenation) {
             return acc + item.0;
         }
         acc
     })
 }
 
-fn check_is_calibration_result(acc: usize, res: usize, nums: &[usize]) -> bool {
-    let acc1 = acc + nums[0];
-    let acc2 = acc * nums[0];
-    if acc1 == res || acc2 == res {
-        return true;
-    } else if nums.len() == 1 {
-        return false;
-    }
-    let acc_res1 = if acc1 > res {
+fn check_is_calibration_result(
+    acc: usize,
+    res: usize,
+    nums: &[usize],
+    with_concatenation: bool,
+) -> bool {
+    if acc > res {
         false
+    } else if nums.is_empty() {
+        acc == res
     } else {
-        check_is_calibration_result(acc1, res, &nums[1..])
-    };
-    let acc_res2 = if acc2 > res {
-        false
-    } else {
-        check_is_calibration_result(acc2, res, &nums[1..])
-    };
+        if let Some((val, vals)) = nums.split_first() {
+            let concat_check = if with_concatenation {
+                let digits = (nums[0] as f64).log10().floor() as usize + 1;
+                let concatenation = acc * 10_usize.pow(digits as u32) + nums[0];
+                check_is_calibration_result(concatenation, res, vals, with_concatenation)
+            } else {
+                false
+            };
 
-    acc_res1 || acc_res2
+            return check_is_calibration_result(acc + val, res, vals, with_concatenation)
+                || check_is_calibration_result(acc * val, res, vals, with_concatenation)
+                || concat_check;
+        }
+        false
+    }
+}
+
+pub fn part_1() -> usize {
+    get_result(false)
 }
 
 pub fn part_2() -> usize {
-    0
+    get_result(true)
 }
