@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-pub fn part_1() -> usize {
+fn get_res(with_harmonics: bool) -> usize {
     let mut antenas_map = HashMap::new();
     let mut row_last_index = 0;
     let mut column_last_index = 0;
@@ -27,40 +27,71 @@ pub fn part_1() -> usize {
     let mut unique_locations_set = HashSet::new();
 
     for positions in antenas_map.values() {
+        let is_add_position = (positions.len() > 1) && with_harmonics;
         for (index, position) in positions.iter().enumerate() {
+            if is_add_position {
+                unique_locations_set.insert(*position);
+            }
             for another_position in positions.iter().skip(index + 1) {
                 let row_diff = position.0.abs_diff(another_position.0) as isize;
                 let column_diff = position.1.abs_diff(another_position.1) as isize;
-                let position_row_minus = position.0 - row_diff;
-                let another_position_row_plus = another_position.0 + row_diff;
-                let position_column_plus = position.1 + column_diff;
-                let position_column_minus = position.1 - column_diff;
-                let another_position_column_plus = another_position.1 + column_diff;
-                let another_position_column_minus = another_position.1 - column_diff;
-                let (antinode_position_1, antinode_position_2) = if position.1 > another_position.1
-                {
-                    (
-                        (position_row_minus, position_column_plus),
-                        (another_position_row_plus, another_position_column_minus),
-                    )
+
+                let (antinode_diff_1, antinode_diff_2) = if position.1 > another_position.1 {
+                    ((-row_diff, column_diff), (row_diff, -column_diff))
                 } else {
-                    (
-                        (position_row_minus, position_column_minus),
-                        (another_position_row_plus, another_position_column_plus),
-                    )
+                    ((-row_diff, -column_diff), (row_diff, column_diff))
                 };
 
-                [antinode_position_1, antinode_position_2]
-                    .into_iter()
-                    .for_each(|pos| {
-                        if pos.0 >= 0
-                            && pos.0 <= row_last_index
-                            && pos.1 >= 0
-                            && pos.1 <= column_last_index
-                        {
-                            unique_locations_set.insert(pos);
+                let mut antinode_position_1 = (
+                    position.0 + antinode_diff_1.0,
+                    position.1 + antinode_diff_1.1,
+                );
+                let mut antinode_position_2 = (
+                    another_position.0 + antinode_diff_2.0,
+                    another_position.1 + antinode_diff_2.1,
+                );
+
+                if with_harmonics {
+                    let mut allowed_position_1 =
+                        is_allowed_position(antinode_position_1, row_last_index, column_last_index);
+                    let mut allowed_position_2 =
+                        is_allowed_position(antinode_position_2, row_last_index, column_last_index);
+
+                    while allowed_position_1 || allowed_position_2 {
+                        if allowed_position_1 {
+                            unique_locations_set.insert(antinode_position_1);
+                            antinode_position_1 = (
+                                antinode_position_1.0 + antinode_diff_1.0,
+                                antinode_position_1.1 + antinode_diff_1.1,
+                            );
+                            allowed_position_1 = is_allowed_position(
+                                antinode_position_1,
+                                row_last_index,
+                                column_last_index,
+                            );
                         }
-                    });
+                        if allowed_position_2 {
+                            unique_locations_set.insert(antinode_position_2);
+                            antinode_position_2 = (
+                                antinode_position_2.0 + antinode_diff_2.0,
+                                antinode_position_2.1 + antinode_diff_2.1,
+                            );
+                            allowed_position_2 = is_allowed_position(
+                                antinode_position_2,
+                                row_last_index,
+                                column_last_index,
+                            );
+                        }
+                    }
+                } else {
+                    [antinode_position_1, antinode_position_2]
+                        .into_iter()
+                        .for_each(|pos| {
+                            if is_allowed_position(pos, row_last_index, column_last_index) {
+                                unique_locations_set.insert(pos);
+                            }
+                        });
+                }
             }
         }
     }
@@ -68,6 +99,21 @@ pub fn part_1() -> usize {
     unique_locations_set.len()
 }
 
+fn is_allowed_position(
+    position: (isize, isize),
+    row_last_index: isize,
+    column_last_index: isize,
+) -> bool {
+    position.0 >= 0
+        && position.0 <= row_last_index
+        && position.1 >= 0
+        && position.1 <= column_last_index
+}
+
+pub fn part_1() -> usize {
+    get_res(false)
+}
+
 pub fn part_2() -> usize {
-    0
+    get_res(true)
 }
