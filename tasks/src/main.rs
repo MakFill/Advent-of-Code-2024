@@ -1,9 +1,9 @@
-mod day_6_guard_gallivant;
+mod day_8_resonant_collinearity;
 
-use day_6_guard_gallivant::day_6::part_1;
-use day_6_guard_gallivant::day_6::part_2;
+use day_8_resonant_collinearity::day_8::part_1;
+use day_8_resonant_collinearity::day_8::part_2;
 
 fn main() {
-    // println!("part_1 - {:?}", part_1());
-    println!("part_2 - {:?}", part_2());
+    println!("part_1 - {:?}", part_1());
+    // println!("part_2 - {:?}", part_2());
 }
