@@ -7,8 +7,10 @@ fn dfs_paths(
     row_last_index: usize,
     column_last_index: usize,
     trail_map: &mut HashMap<(usize, usize), HashSet<(usize, usize)>>,
-) {
+) -> usize {
+    let mut res = 0;
     if data[curr_position.0][curr_position.1] == 9 {
+        res += 1;
         trail_map
             .entry(start)
             .or_insert_with(HashSet::new)
@@ -36,7 +38,7 @@ fn dfs_paths(
         next_positions.iter().for_each(|i| {
             if let Some(next_position) = i {
                 if item + 1 == data[next_position.0][next_position.1] {
-                    dfs_paths(
+                    res += dfs_paths(
                         data,
                         start,
                         *next_position,
@@ -48,9 +50,10 @@ fn dfs_paths(
             }
         });
     }
+    res
 }
 
-pub fn part_1() -> usize {
+pub fn part_1() -> (usize, usize) {
     let data = include_str!("./input.txt")
         .lines()
         .map(|line| {
@@ -63,12 +66,13 @@ pub fn part_1() -> usize {
     let row_last_index = data.len() - 1;
     let column_last_index = data[0].len() - 1;
     let mut trail_map = HashMap::new();
+    let mut res = 0;
 
     for (row_index, row) in data.iter().enumerate() {
         for (column_index, &item) in row.iter().enumerate() {
             if item == 0 {
                 let start = (row_index, column_index);
-                dfs_paths(
+                res += dfs_paths(
                     &data,
                     start,
                     start,
@@ -80,9 +84,5 @@ pub fn part_1() -> usize {
         }
     }
 
-    trail_map.values().fold(0, |acc, i| acc + i.len())
-}
-
-pub fn part_2() -> usize {
-    0
+    (trail_map.values().fold(0, |acc, i| acc + i.len()), res)
 }
