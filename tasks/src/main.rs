@@ -1,7 +1,7 @@
-mod day_9_disk_fragmenter;
+mod day_10_hoof_it;
 
-use day_9_disk_fragmenter::day_9::part_1;
-use day_9_disk_fragmenter::day_9::part_2;
+use day_10_hoof_it::day_10::part_1;
+use day_10_hoof_it::day_10::part_2;
 
 fn main() {
     println!("part_1 - {:?}", part_1());
