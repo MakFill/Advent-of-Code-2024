@@ -1,9 +1,9 @@
-mod day_10_hoof_it;
+mod day_11_plutonian_pebbles;
 
-use day_10_hoof_it::day_10::part_1;
+use day_11_plutonian_pebbles::day_11::part_1;
+use day_11_plutonian_pebbles::day_11::part_2;
 
 fn main() {
-    let (res1, res2) = part_1();
-    println!("part_1 - {res1:?}");
-    println!("part_2 - {res2:?}");
+    println!("part_1 - {:?}", part_1());
+    println!("part_2 - {:?}", part_2());
 }
