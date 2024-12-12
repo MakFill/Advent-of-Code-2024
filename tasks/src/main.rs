@@ -1,7 +1,7 @@
-mod day_11_plutonian_pebbles;
+mod day_12_garden_groups;
 
-use day_11_plutonian_pebbles::day_11::part_1;
-use day_11_plutonian_pebbles::day_11::part_2;
+use day_12_garden_groups::day_12::part_1;
+use day_12_garden_groups::day_12::part_2;
 
 fn main() {
     println!("part_1 - {:?}", part_1());
