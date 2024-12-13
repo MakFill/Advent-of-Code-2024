@@ -1,9 +1,9 @@
-mod day_12_garden_groups;
+mod day_13_claw_contraption;
 
-use day_12_garden_groups::day_12::get_res;
+use day_13_claw_contraption::day_13::part_1;
+use day_13_claw_contraption::day_13::part_2;
 
 fn main() {
-    let (part_1, part_2) = get_res();
-    println!("part_1 - {part_1}");
-    println!("part_2 - {part_2}");
+    println!("part_1 - {}", part_1());
+    println!("part_2 - {}", part_2());
 }
