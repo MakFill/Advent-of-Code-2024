@@ -1,9 +1,9 @@
-mod day_16_reindeer_maze;
+mod day_17_chronospatial_computer;
 
-use day_16_reindeer_maze::day_16::get_res;
+use day_17_chronospatial_computer::day_17::part_1;
+use day_17_chronospatial_computer::day_17::part_2;
 
 fn main() {
-    let (part_1, part_2) = get_res();
-    println!("part_1 - {part_1}");
-    println!("part_2 - {part_2}");
+    println!("part_1 - {}", part_1());
+    // println!("part_2 - {}", part_2());
 }
