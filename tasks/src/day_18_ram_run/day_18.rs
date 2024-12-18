@@ -82,7 +82,7 @@ fn get_minimum_steps(grid: &[Vec<char>]) -> usize {
     dist[finish.0][finish.1]
 }
 
-pub fn part_1() -> usize {
+fn get_input_data() -> (Vec<Position>, Vec<Vec<char>>) {
     let data = include_str!("./input.txt")
         .lines()
         .map(|line| {
@@ -100,9 +100,33 @@ pub fn part_1() -> usize {
         grid[pos.0][pos.1] = '#';
     });
 
+    (data, grid)
+}
+
+pub fn part_1() -> usize {
+    let (_, grid) = get_input_data();
     get_minimum_steps(&grid)
 }
 
-pub fn part_2() -> usize {
-    0
+pub fn part_2() -> String {
+    let (data, grid) = get_input_data();
+
+    let mut min = FALLEN_BYTES;
+    let mut max = data.len() - 1;
+    let mut curr = min + (max - min) / 2;
+
+    while min < max {
+        let mut curr_grid = grid.clone();
+        data[FALLEN_BYTES..=curr].iter().for_each(|pos| {
+            curr_grid[pos.0][pos.1] = '#';
+        });
+        if get_minimum_steps(&curr_grid) == usize::MAX {
+            max = curr;
+        } else {
+            min = curr + 1;
+        }
+        curr = min + (max - min) / 2;
+    }
+
+    format!("{},{}", data[max].1, data[max].0)
 }
