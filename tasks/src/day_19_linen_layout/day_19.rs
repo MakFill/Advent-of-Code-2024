@@ -1,56 +1,35 @@
-use std::collections::HashSet;
+use std::collections::HashMap;
 
-fn check_is_design_possible(design: &str, patterns: &HashSet<&str>) -> bool {
-    for &pattern in patterns {
-        if design.starts_with(pattern) {
-            let pattern_len = pattern.len();
-            if design.len() == pattern_len
-                || check_is_design_possible(&design[pattern_len..], patterns)
-            {
-                return true;
-            }
-        }
+fn get_count(
+    design: String,
+    patterns: &[&str],
+    patterns_map: &mut HashMap<String, usize>,
+) -> usize {
+    if let Some(&res) = patterns_map.get(&design) {
+        return res;
     }
 
-    false
-}
-
-fn check_is_pattern_redundant_rec(pattern: &str, patterns: &HashSet<&str>) -> bool {
-    let len = pattern.len();
-    for size in 1..len {
-        let pair = pattern.split_at(size);
-        match (patterns.contains(pair.0), patterns.contains(pair.1)) {
-            (true, true) => {
-                return true;
-            }
-            (true, false) => {
-                if pair.1.len() > 1 && check_is_pattern_redundant_rec(pair.1, patterns) {
-                    return true;
-                }
-            }
-            (false, true) => {
-                if pair.0.len() > 1 && check_is_pattern_redundant_rec(pair.0, patterns) {
-                    return true;
-                }
-            }
-            (false, false) => {
-                if pair.0.len() > 1
-                    && pair.1.len() > 1
-                    && check_is_pattern_redundant_rec(pair.0, patterns)
-                    && check_is_pattern_redundant_rec(pair.1, patterns)
-                {
-                    return true;
-                }
-            }
-        }
+    if design.is_empty() {
+        return 1;
     }
-    false
+
+    let res_count = patterns
+        .iter()
+        .filter(|p| design.starts_with(*p))
+        .fold(0, |acc, pattern| {
+            let next_pattern_res =
+                get_count(design[pattern.len()..].to_string(), patterns, patterns_map);
+            acc + next_pattern_res
+        });
+
+    patterns_map.insert(design, res_count);
+    res_count
 }
 
-pub fn part_1() -> usize {
+pub fn get_res() -> (usize, usize) {
     let data = include_str!("./input.txt").lines().collect::<Vec<_>>();
     let mut parts = data.splitn(2, |&a| a.is_empty());
-    let mut patterns = HashSet::new();
+    let mut patterns = Vec::new();
 
     parts
         .next()
@@ -60,25 +39,20 @@ pub fn part_1() -> usize {
         .into_iter()
         .for_each(|i| {
             i.split(", ").for_each(|p| {
-                patterns.insert(p);
+                patterns.push(p);
             })
         });
 
     let designs = parts.next().unwrap().iter().collect::<Vec<_>>();
-    let patterns_to_iter = patterns.clone();
+    let mut part_1 = 0;
 
-    for pattern in patterns_to_iter.clone() {
-        if check_is_pattern_redundant_rec(pattern, &patterns_to_iter) {
-            patterns.remove(pattern);
+    let part_2 = designs.iter().fold(0, |acc, d| {
+        let res = get_count(d.to_string(), &patterns, &mut HashMap::new());
+        if res > 0 {
+            part_1 += 1;
         }
-    }
+        acc + res
+    });
 
-    designs
-        .into_iter()
-        .filter(|&d| check_is_design_possible(d, &patterns))
-        .count()
-}
-
-pub fn part_2() -> usize {
-    0
+    (part_1, part_2)
 }
