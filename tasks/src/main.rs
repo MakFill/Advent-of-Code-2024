@@ -1,9 +1,9 @@
-mod day_19_linen_layout;
+mod day_20_race_condition;
 
-use day_19_linen_layout::day_19::get_res;
+use day_20_race_condition::day_20::part_1;
+// use day_20_race_condition::day_20::part_2;
 
 fn main() {
-    let (part_1, part_2) = get_res();
-    println!("part_1 - {part_1}");
-    println!("part_2 - {part_2}");
+    println!("part_1 - {}", part_1());
+    // println!("part_2 - {}", part_2());
 }
